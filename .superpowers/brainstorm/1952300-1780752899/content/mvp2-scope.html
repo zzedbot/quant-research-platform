@@ -1,0 +1,52 @@
+<style>
+  body { font-family: 'Inter', -apple-system, sans-serif; padding: 40px; max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 6px; color: #e2e8f0; }
+  .subtitle { color: #64748b; margin-bottom: 28px; font-size: 13px; }
+  .phase { background: #111827; border: 1px solid #1e2d3d; border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+  .phase h2 { font-size: 15px; color: #14B8A6; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .badge-done { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .badge-next { background: rgba(20,184,166,0.15); color: #14B8A6; }
+  .modules { display: flex; flex-direction: column; gap: 6px; }
+  .mod { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 13px; }
+  .mod-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .mod-icon.blue { background: rgba(59,130,246,0.2); color: #3b82f6; }
+  .mod-icon.purple { background: rgba(139,92,246,0.2); color: #8b5cf6; }
+  .mod-icon.orange { background: rgba(245,158,11,0.2); color: #f59e0b; }
+  .mod-icon.green { background: rgba(34,197,94,0.2); color: #22c55e; }
+  .arrow-down { text-align: center; font-size: 18px; color: #475569; margin: 4px 0; }
+  .flow { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #94a3b8; padding: 10px 14px; background: rgba(20,184,166,0.05); border: 1px solid rgba(20,184,166,0.2); border-radius: 8px; }
+  .flow span { color: #e2e8f0; font-weight: 600; }
+</style>
+
+<h1>🎯 MVP 2 研究闭环 — 整体设计</h1>
+<p class="subtitle">从数据到实验：股票池 → 因子 → 技术指标 → Experiment</p>
+
+<div class="phase">
+  <h2>📊 MVP 1 已完成 <span class="badge badge-done">DONE</span></h2>
+  <div class="modules">
+    <div class="mod"><div class="mod-icon green">✓</div>数据源适配器 (AkShare/Sina/腾讯)</div>
+    <div class="mod"><div class="mod-icon green">✓</div>Parquet 存储 (Raw/Clean)</div>
+    <div class="mod"><div class="mod-icon green">✓</div>SQLite 元数据库</div>
+    <div class="mod"><div class="mod-icon green">✓</div>数据质量检查</div>
+    <div class="mod"><div class="mod-icon green">✓</div>Backend API + 数据中心 UI</div>
+  </div>
+</div>
+
+<div class="arrow-down">▼</div>
+
+<div class="phase">
+  <h2>🔬 MVP 2 研究闭环 <span class="badge badge-next">IN DESIGN</span></h2>
+  <div class="modules">
+    <div class="mod"><div class="mod-icon blue">U</div><strong>Universe</strong> 股票池管理 — 规则定义、成分管理、历史对比</div>
+    <div class="mod"><div class="mod-icon purple">F</div><strong>Features</strong> 因子与指标库 — 内置因子、技术指标计算、分层分析</div>
+    <div class="mod"><div class="mod-icon orange">E</div><strong>Events</strong> 事件标签 — 事件结构、窗口统计</div>
+    <div class="mod"><div class="mod-icon green">X</div><strong>Experiment</strong> 实验体系 — 实验模型、配置、记录、Web UI</div>
+  </div>
+</div>
+
+<div class="arrow-down">▼</div>
+
+<div class="flow">
+  🔄 工作流: <span>股票池</span> → <span>因子/技术指标</span> → <span>信号生成</span> → <span>Experiment 记录</span> → <span>后续回测</span>
+</div>
