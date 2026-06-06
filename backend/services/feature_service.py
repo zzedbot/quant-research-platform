@@ -34,6 +34,9 @@ class FeatureService:
         factor_df = self._compute_factor(factor_name, bars)
         if factor_df.empty:
             return {"error": "Factor computation failed"}
+        # Replace NaN/inf for JSON serialization
+        import numpy as np
+        factor_df["factor_value"] = factor_df["factor_value"].replace([np.inf, -np.inf], np.nan)
         bars["next_return"] = bars.groupby("symbol")["close"].pct_change(-1).shift(-1)
         returns_df = bars[["trade_date", "symbol", "next_return"]].dropna()
         ic_df = ICAnalyzer.compute_ic(factor_df, returns_df)
@@ -41,11 +44,15 @@ class FeatureService:
         quantile_df = QuantileAnalyzer.compute_quantile_returns(factor_df, returns_df, n_quantiles=5)
         q_spread = QuantileAnalyzer.quantile_spread(quantile_df)
         dist = DistributionAnalyzer.compute_distribution(factor_df)
+        # Convert dates to strings for JSON
+        factor_out = factor_df.head(50).copy()
+        factor_out["trade_date"] = factor_out["trade_date"].astype(str)
+        factor_out = factor_out.where(pd.notnull(factor_out), None)
         return {
             "factor_name": factor_name, "symbol_count": int(bars["symbol"].nunique()),
             "date_count": int(bars["trade_date"].nunique()),
             "ic_statistics": ic_stats, "quantile_spread": q_spread, "distribution": dist,
-            "factor_data": factor_df.head(50).to_dict(orient="records"),
+            "factor_data": factor_out.to_dict(orient="records"),
         }
 
     def _compute_factor(self, name, bars):
