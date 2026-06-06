@@ -1,0 +1,13 @@
+default_source: akshare
+
+akshare:
+  type: akshare
+  rate_limit: 1.0
+  timeout: 30
+  markets: ["CN", "HK"]
+
+storage:
+  raw_dir: "data/raw"
+  clean_dir: "data/clean"
+  feature_dir: "data/feature"
+  meta_db: "data/meta.db"
