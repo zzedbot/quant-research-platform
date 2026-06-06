@@ -18,15 +18,15 @@ class ICAnalyzer:
 
     @staticmethod
     def ic_statistics(ic_df):
-        ic = ic_df["ic"].dropna()
-        ric = ic_df["rank_ic"].dropna()
+        ic = ic_df["ic"].dropna().replace([float('inf'), float('-inf')], float('nan')).dropna()
+        ric = ic_df["rank_ic"].dropna().replace([float('inf'), float('-inf')], float('nan')).dropna()
         return {
-            "ic_mean": float(ic.mean()) if len(ic) > 0 else 0,
-            "ic_std": float(ic.std()) if len(ic) > 0 else 0,
-            "icir": float(ic.mean() / ic.std()) if ic.std() > 0 else 0,
-            "ic_positive_pct": float((ic > 0).mean()) if len(ic) > 0 else 0,
-            "rank_ic_mean": float(ric.mean()) if len(ric) > 0 else 0,
-            "rank_ic_std": float(ric.std()) if len(ric) > 0 else 0,
-            "rank_icir": float(ric.mean() / ric.std()) if ric.std() > 0 else 0,
-            "rank_ic_positive_pct": float((ric > 0).mean()) if len(ric) > 0 else 0,
+            "ic_mean": round(float(ic.mean()), 6) if len(ic) > 0 else 0,
+            "ic_std": round(float(ic.std()), 6) if len(ic) > 0 else 0,
+            "icir": round(float(ic.mean() / ic.std()), 6) if len(ic) > 0 and ic.std() > 0 else 0,
+            "ic_positive_pct": round(float((ic > 0).mean()), 6) if len(ic) > 0 else 0,
+            "rank_ic_mean": round(float(ric.mean()), 6) if len(ric) > 0 else 0,
+            "rank_ic_std": round(float(ric.std()), 6) if len(ric) > 0 else 0,
+            "rank_icir": round(float(ric.mean() / ric.std()), 6) if len(ric) > 0 and ric.std() > 0 else 0,
+            "rank_ic_positive_pct": round(float((ric > 0).mean()), 6) if len(ric) > 0 else 0,
         }
