@@ -2,17 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-bg: #0a0e17;
-  --color-surface: #111827;
-  --color-border: #1e2d3d;
-  --color-text: #e2e8f0;
-  --color-text-muted: #64748b;
-  --color-text-dim: #475569;
+@layer base {
+  body {
+    @apply bg-[#0a0e17] text-[#e2e8f0];
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  }
 }
 
-body {
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+@layer components {
+  .stat-card {
+    @apply bg-[#111827] border border-[#1e2d3d] rounded-xl p-4 hover:border-[#0F766E]/50 transition-colors;
+  }
+  .section-card {
+    @apply bg-[#111827] border border-[#1e2d3d] rounded-xl overflow-hidden;
+  }
+  .loading-text {
+    @apply text-center py-12 text-[#64748b];
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* Smooth transitions */
+.page-enter {
+  @apply animate-[fadeIn_0.15s_ease-out];
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
