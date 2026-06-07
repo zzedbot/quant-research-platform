@@ -4,7 +4,13 @@ import pandas as pd
 
 def build_portfolio(factor_df: pd.DataFrame, date: str, method: str = "equal",
                     top_n: int = 10, market_cap_df: pd.DataFrame = None) -> dict:
-    day_data = factor_df[factor_df["trade_date"] == date].copy()
+    # Convert date to match column type
+    if hasattr(factor_df["trade_date"].iloc[0], 'strftime'):
+        from datetime import datetime
+        date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+        day_data = factor_df[factor_df["trade_date"] == date_obj].copy()
+    else:
+        day_data = factor_df[factor_df["trade_date"] == date].copy()
     if day_data.empty:
         return {}
     day_data = day_data.dropna(subset=["factor_value"])
