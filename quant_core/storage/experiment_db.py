@@ -66,6 +66,27 @@ class ExperimentDB:
                     metadata TEXT DEFAULT '{}',
                     created_at TEXT NOT NULL
                 );
+
+                CREATE TABLE IF NOT EXISTS backtests (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    backtest_type TEXT NOT NULL,
+                    status TEXT NOT NULL DEFAULT 'running',
+                    experiment_id TEXT DEFAULT '',
+                    start_date TEXT NOT NULL,
+                    end_date TEXT NOT NULL,
+                    initial_capital REAL NOT NULL,
+                    final_capital REAL DEFAULT 0,
+                    benchmark TEXT DEFAULT '',
+                    metrics TEXT DEFAULT '{}',
+                    equity_curve TEXT DEFAULT '[]',
+                    drawdown_curve TEXT DEFAULT '[]',
+                    positions TEXT DEFAULT '[]',
+                    trades TEXT DEFAULT '[]',
+                    error_message TEXT DEFAULT '',
+                    created_at TEXT NOT NULL,
+                    finished_at TEXT DEFAULT ''
+                );
             """)
 
     def _json(self, val):
@@ -233,3 +254,68 @@ class ExperimentDB:
         with self.connection() as conn:
             rows = conn.execute("SELECT DISTINCT event_type FROM events").fetchall()
             return [r["event_type"] for r in rows]
+
+    # Backtest CRUD
+    def create_backtest(self, id, name, backtest_type, start_date, end_date,
+                        initial_capital, benchmark="", experiment_id="") -> dict:
+        now = datetime.now().isoformat()
+        with self.connection() as conn:
+            conn.execute(
+                """INSERT INTO backtests
+                   (id, name, backtest_type, start_date, end_date, initial_capital,
+                    benchmark, experiment_id, status, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'running', ?)""",
+                (id, name, backtest_type, start_date, end_date, initial_capital,
+                 benchmark, experiment_id, now)
+            )
+        return {"id": id, "status": "running", "created_at": now}
+
+    def save_backtest_result(self, id, result: dict) -> bool:
+        import json
+        with self.connection() as conn:
+            conn.execute(
+                """UPDATE backtests SET
+                   final_capital=?, status=?, metrics=?, equity_curve=?,
+                   drawdown_curve=?, positions=?, trades=?,
+                   error_message=?, finished_at=?
+                   WHERE id=?""",
+                (result.get("final_capital", 0), result.get("status", "failed"),
+                 json.dumps(result.get("metrics", {})),
+                 json.dumps(result.get("equity_curve", [])),
+                 json.dumps(result.get("drawdown_curve", [])),
+                 json.dumps(result.get("positions", [])[-200:]),
+                 json.dumps(result.get("trades", [])),
+                 result.get("error_message", ""),
+                 result.get("finished_at", ""),
+                 id)
+            )
+        return True
+
+    def get_backtests(self) -> list:
+        import json
+        with self.connection() as conn:
+            rows = conn.execute("SELECT * FROM backtests ORDER BY created_at DESC").fetchall()
+            result = []
+            for r in rows:
+                d = dict(r)
+                for f in ["metrics", "equity_curve", "drawdown_curve", "positions", "trades"]:
+                    try: d[f] = json.loads(d[f])
+                    except: d[f] = [] if f != "metrics" else {}
+                result.append(d)
+            return result
+
+    def get_backtest(self, id) -> dict:
+        import json
+        with self.connection() as conn:
+            row = conn.execute("SELECT * FROM backtests WHERE id=?", (id,)).fetchone()
+            if not row: return {}
+            d = dict(row)
+            for f in ["metrics", "equity_curve", "drawdown_curve", "positions", "trades"]:
+                try: d[f] = json.loads(d[f])
+                except: d[f] = [] if f != "metrics" else {}
+            return d
+
+    def delete_backtest(self, id) -> bool:
+        with self.connection() as conn:
+            conn.execute("DELETE FROM backtests WHERE id=?", (id,))
+        return True

@@ -11,6 +11,7 @@ from backend.api.universes import router as universes_router
 from backend.api.features import router as features_router
 from backend.api.experiments import router as experiments_router
 from backend.api.events import router as events_router
+from backend.api.backtests import router as backtests_router
 
 app_state = {}
 
@@ -42,6 +43,7 @@ def create_app(config_path: str = None) -> FastAPI:
     app.include_router(features_router)
     app.include_router(experiments_router)
     app.include_router(events_router)
+    app.include_router(backtests_router)
 
     @app.get("/health")
     async def health():
