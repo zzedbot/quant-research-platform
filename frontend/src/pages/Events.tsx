@@ -17,7 +17,7 @@ const Events: React.FC = () => {
 
   if (loading) return <div className="loading-text"><div className="inline-block w-5 h-5 border-2 border-[#1e2d3d] border-t-primary rounded-full animate-spin mr-2 align-middle" />加载中...</div>
 
-  const typeColors: Record<string, string> = { earnings: 'success', notice: 'warning', dividend: 'default', suspension: 'destructive' }
+  const typeColors: Record<string, 'success' | 'warning' | 'default' | 'destructive'> = { earnings: 'success', notice: 'warning', dividend: 'default', suspension: 'destructive' }
 
   return (
     <div className="page-enter">

@@ -43,7 +43,7 @@ const Experiments: React.FC = () => {
     fetchData()
   }
 
-  const statusColors: Record<string, string> = { draft: 'secondary', running: 'warning', completed: 'success', failed: 'destructive' }
+  const statusColors: Record<string, 'secondary' | 'warning' | 'success' | 'destructive'> = { draft: 'secondary', running: 'warning', completed: 'success', failed: 'destructive' }
 
   if (loading) return <div className="loading-text"><div className="inline-block w-5 h-5 border-2 border-[#1e2d3d] border-t-primary rounded-full animate-spin mr-2 align-middle" />加载中...</div>
 

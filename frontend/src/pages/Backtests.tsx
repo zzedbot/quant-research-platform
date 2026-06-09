@@ -74,7 +74,7 @@ const Backtests: React.FC = () => {
 
   const fmtMoney = (v: number) => `¥${v.toLocaleString()}`
   const statusBadge = (s: string) => {
-    const m: Record<string, string> = { completed: 'success', running: 'warning', failed: 'destructive' }
+    const m: Record<string, 'success' | 'warning' | 'destructive' | 'secondary'> = { completed: 'success', running: 'warning', failed: 'destructive' }
     return <Badge variant={m[s] || 'secondary'}>{s}</Badge>
   }
 
