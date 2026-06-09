@@ -121,11 +121,11 @@ def run_portfolio_backtest(bars: pd.DataFrame, factor_df: pd.DataFrame,
         # Benchmark
         bm_curve = []
         if benchmark_df is not None and not benchmark_df.empty:
-            bm_filtered = benchmark_df[(benchmark_df["trade_date"] >= start_date) &
-                                        (benchmark_df["trade_date"] <= end_date)]
+            bm_filtered = benchmark_df[(benchmark_df["trade_date"].astype(str) >= start_date) &
+                                        (benchmark_df["trade_date"].astype(str) <= end_date)]
             if not bm_filtered.empty and "close" in bm_filtered.columns:
                 base_val = bm_filtered.iloc[0]["close"]
-                bm_curve = [{"date": r["trade_date"], "value": initial_capital * r["close"] / base_val}
+                bm_curve = [{"date": str(r["trade_date"]), "value": initial_capital * r["close"] / base_val}
                             for _, r in bm_filtered.iterrows()]
 
         result.metrics = calc_metrics(equity_curve, bm_curve if bm_curve else None, all_trades)

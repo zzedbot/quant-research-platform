@@ -4,6 +4,7 @@ import Universes from './pages/Universes'
 import Features from './pages/Features'
 import Events from './pages/Events'
 import Experiments from './pages/Experiments'
+import Backtests from './pages/Backtests'
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('datacenter')
@@ -13,6 +14,7 @@ const App: React.FC = () => {
     { id: 'features', label: '因子与指标', icon: '📈' },
     { id: 'events', label: '事件库', icon: '📰' },
     { id: 'experiments', label: '实验管理', icon: '🧪' },
+    { id: 'backtests', label: '回测任务', icon: '📊' },
   ]
 
   return (
@@ -45,6 +47,7 @@ const App: React.FC = () => {
         {currentPage === 'features' && <Features />}
         {currentPage === 'events' && <Events />}
         {currentPage === 'experiments' && <Experiments />}
+        {currentPage === 'backtests' && <Backtests />}
       </main>
     </div>
   )
